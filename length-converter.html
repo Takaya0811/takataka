@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>長さの単位変換ツール</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .converter-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .converter-section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .input-group label {
+            min-width: 80px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 120px;
+        }
+        
+        .conversion-arrow {
+            text-align: center;
+            font-size: 24px;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .result {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .result h3 {
+            margin: 0 0 10px 0;
+            color: #2c5c2c;
+        }
+        
+        .result-item {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: white;
+            border-radius: 3px;
+        }
+        
+        .clear-button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .clear-button:hover {
+            background-color: #ff5252;
+        }
+        
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .input-group label {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>長さの単位変換ツール</h1>
+        
+        <div class="converter-section">
+            <h2>メートル系単位変換</h2>
+            <div class="input-group">
+                <label for="metric-input">数値:</label>
+                <input type="number" id="metric-input" placeholder="数値を入力してください" step="any">
+            </div>
+            <div class="input-group">
+                <label for="metric-unit">単位:</label>
+                <select id="metric-unit">
+                    <option value="mm">ミリメートル (mm)</option>
+                    <option value="cm">センチメートル (cm)</option>
+                    <option value="m" selected>メートル (m)</option>
+                    <option value="km">キロメートル (km)</option>
+                </select>
+            </div>
+            <button class="clear-button" onclick="clearMetric()">クリア</button>
+            
+            <div class="conversion-arrow">↓</div>
+            
+            <div class="result" id="metric-result">
+                <h3>変換結果</h3>
+                <div id="metric-conversions"></div>
+            </div>
+        </div>
+        
+        <div class="converter-section">
+            <h2>英米系単位変換</h2>
+            <div class="input-group">
+                <label for="imperial-input">数値:</label>
+                <input type="number" id="imperial-input" placeholder="数値を入力してください" step="any">
+            </div>
+            <div class="input-group">
+                <label for="imperial-unit">単位:</label>
+                <select id="imperial-unit">
+                    <option value="inch" selected>インチ (inch)</option>
+                    <option value="feet">フィート (feet)</option>
+                    <option value="yard">ヤード (yard)</option>
+                    <option value="mile">マイル (mile)</option>
+                </select>
+            </div>
+            <button class="clear-button" onclick="clearImperial()">クリア</button>
+            
+            <div class="conversion-arrow">↓</div>
+            
+            <div class="result" id="imperial-result">
+                <h3>変換結果</h3>
+                <div id="imperial-conversions"></div>
+            </div>
+        </div>
+        
+        <div class="converter-section">
+            <h2>メートル系 ⇔ 英米系変換</h2>
+            <div class="input-group">
+                <label for="cross-input">数値:</label>
+                <input type="number" id="cross-input" placeholder="数値を入力してください" step="any">
+            </div>
+            <div class="input-group">
+                <label for="cross-unit">単位:</label>
+                <select id="cross-unit">
+                    <optgroup label="メートル系">
+                        <option value="mm">ミリメートル (mm)</option>
+                        <option value="cm">センチメートル (cm)</option>
+                        <option value="m" selected>メートル (m)</option>
+                        <option value="km">キロメートル (km)</option>
+                    </optgroup>
+                    <optgroup label="英米系">
+                        <option value="inch">インチ (inch)</option>
+                        <option value="feet">フィート (feet)</option>
+                        <option value="yard">ヤード (yard)</option>
+                        <option value="mile">マイル (mile)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <button class="clear-button" onclick="clearCross()">クリア</button>
+            
+            <div class="conversion-arrow">↓</div>
+            
+            <div class="result" id="cross-result">
+                <h3>変換結果</h3>
+                <div id="cross-conversions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const metricUnits = {
+            mm: { name: 'ミリメートル', factor: 0.001 },
+            cm: { name: 'センチメートル', factor: 0.01 },
+            m: { name: 'メートル', factor: 1 },
+            km: { name: 'キロメートル', factor: 1000 }
+        };
+
+        const imperialUnits = {
+            inch: { name: 'インチ', factor: 0.0254 },
+            feet: { name: 'フィート', factor: 0.3048 },
+            yard: { name: 'ヤード', factor: 0.9144 },
+            mile: { name: 'マイル', factor: 1609.344 }
+        };
+
+        function formatNumber(num) {
+            if (num === 0) return '0';
+            if (Math.abs(num) < 0.001) return num.toExponential(3);
+            if (Math.abs(num) >= 1000000) return num.toExponential(3);
+            return parseFloat(num.toFixed(6)).toString();
+        }
+
+        function convertMetric() {
+            const input = document.getElementById('metric-input').value;
+            const unit = document.getElementById('metric-unit').value;
+            const resultDiv = document.getElementById('metric-conversions');
+            
+            if (!input || isNaN(input)) {
+                resultDiv.innerHTML = '<div class="result-item">数値を入力してください</div>';
+                return;
+            }
+            
+            const inputValue = parseFloat(input);
+            const inputInMeters = inputValue * metricUnits[unit].factor;
+            
+            let html = '';
+            for (const [unitKey, unitInfo] of Object.entries(metricUnits)) {
+                if (unitKey !== unit) {
+                    const convertedValue = inputInMeters / unitInfo.factor;
+                    html += `<div class="result-item">${formatNumber(convertedValue)} ${unitInfo.name}</div>`;
+                }
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function convertImperial() {
+            const input = document.getElementById('imperial-input').value;
+            const unit = document.getElementById('imperial-unit').value;
+            const resultDiv = document.getElementById('imperial-conversions');
+            
+            if (!input || isNaN(input)) {
+                resultDiv.innerHTML = '<div class="result-item">数値を入力してください</div>';
+                return;
+            }
+            
+            const inputValue = parseFloat(input);
+            const inputInMeters = inputValue * imperialUnits[unit].factor;
+            
+            let html = '';
+            for (const [unitKey, unitInfo] of Object.entries(imperialUnits)) {
+                if (unitKey !== unit) {
+                    const convertedValue = inputInMeters / unitInfo.factor;
+                    html += `<div class="result-item">${formatNumber(convertedValue)} ${unitInfo.name}</div>`;
+                }
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function convertCross() {
+            const input = document.getElementById('cross-input').value;
+            const unit = document.getElementById('cross-unit').value;
+            const resultDiv = document.getElementById('cross-conversions');
+            
+            if (!input || isNaN(input)) {
+                resultDiv.innerHTML = '<div class="result-item">数値を入力してください</div>';
+                return;
+            }
+            
+            const inputValue = parseFloat(input);
+            const allUnits = { ...metricUnits, ...imperialUnits };
+            const inputInMeters = inputValue * allUnits[unit].factor;
+            
+            let html = '<div><strong>メートル系:</strong></div>';
+            for (const [unitKey, unitInfo] of Object.entries(metricUnits)) {
+                if (unitKey !== unit) {
+                    const convertedValue = inputInMeters / unitInfo.factor;
+                    html += `<div class="result-item">${formatNumber(convertedValue)} ${unitInfo.name}</div>`;
+                }
+            }
+            
+            html += '<div style="margin-top: 15px;"><strong>英米系:</strong></div>';
+            for (const [unitKey, unitInfo] of Object.entries(imperialUnits)) {
+                if (unitKey !== unit) {
+                    const convertedValue = inputInMeters / unitInfo.factor;
+                    html += `<div class="result-item">${formatNumber(convertedValue)} ${unitInfo.name}</div>`;
+                }
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+
+        function clearMetric() {
+            document.getElementById('metric-input').value = '';
+            document.getElementById('metric-conversions').innerHTML = '';
+        }
+
+        function clearImperial() {
+            document.getElementById('imperial-input').value = '';
+            document.getElementById('imperial-conversions').innerHTML = '';
+        }
+
+        function clearCross() {
+            document.getElementById('cross-input').value = '';
+            document.getElementById('cross-conversions').innerHTML = '';
+        }
+
+        document.getElementById('metric-input').addEventListener('input', convertMetric);
+        document.getElementById('metric-unit').addEventListener('change', convertMetric);
+        document.getElementById('imperial-input').addEventListener('input', convertImperial);
+        document.getElementById('imperial-unit').addEventListener('change', convertImperial);
+        document.getElementById('cross-input').addEventListener('input', convertCross);
+        document.getElementById('cross-unit').addEventListener('change', convertCross);
+    </script>
+</body>
+</html>
